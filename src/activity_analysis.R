@@ -71,8 +71,36 @@ plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
 plot_time_series_interval_max_steps
 
 ##Question 3: Inputting missing values
-### Calculate number of missing values
+### Calculate and report the number of missing values
 missing_activity_data <- filter(activity_data,is.na(activity_data$steps))
 print(paste("Number of Observations missing data:", count(missing_activity_data)))
 
-###
+### Devise strategy to replace NA values with average steps value for each corresponding interval.
+imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interval_all_days, by = "interval") %>%
+    select(steps = meanSteps, date,interval)
+
+### Create new dataset that contains original with replaced NA observations.
+revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
+
+### Make a histogram of the total number of steps taken each day using new dataset.
+revised_total_steps_per_day <- revised_activity_data %>%
+    select(date, steps) %>%
+    group_by(date) %>%
+    summarise(totalSteps = sum(steps))
+
+### Plot histogram of steps per day.
+plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_per_day, aes(date, totalSteps, fill = totalSteps)) +
+    geom_bar(stat = "identity", color = "steelblue") +
+    scale_x_date(date_labels = "%m/%d", date_minor_breaks = "1 day") +
+    labs(title = "Revised Total Steps per Day", x = "Date", y = "Steps") +
+    ggsave(filename = "figures/histogram_revised_total_steps_per_day.png", width = 5, height = 3)
+
+plot_histogram_revised_total_steps_per_day
+
+###calculate the mean value of total steps
+revisedMeanTotalSteps <- mean(revised_total_steps_per_day$totalSteps)
+print(paste("Revised Mean total steps per day:", revisedMeanTotalSteps))
+
+###calculate the mid value of total steps
+revisedMidTotalSteps <- median(revised_total_steps_per_day$totalSteps)
+print(paste("Revised Median total steps per day:", revisedMidTotalSteps))
