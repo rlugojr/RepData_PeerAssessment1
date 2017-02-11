@@ -15,8 +15,8 @@ activity_data <- readr::read_csv(file = "data/activity.zip", col_names = TRUE, c
 
 ##Question 1: What is mean total number of steps taken per day?
 ### Make a data.frame for total number of steps per day (excluding NA.)
-total_steps_per_day <- activity_data %>%
-    filter(!is.na(steps)) %>%
+activity_data_no_NA <- filter(activity_data,!is.na(activity_data$steps))
+total_steps_per_day <- activity_data_no_NA %>%
     select(date, steps) %>%
     group_by(date) %>%
     summarise(totalSteps = sum(steps))
@@ -32,17 +32,16 @@ plot_histogram_total_steps_per_day
 
 ###calculate the mean value of total steps
 meanTotalSteps <- mean(total_steps_per_day$totalSteps)
-print(paste("Mean total steps per day: ", meanTotalSteps))
+print(paste("Mean total steps per day:", meanTotalSteps))
 
 ###calculate the mid value of total steps
 midTotalSteps <- median(total_steps_per_day$totalSteps)
-print(paste("Median total steps per day: ", midTotalSteps))
+print(paste("Median total steps per day:", midTotalSteps))
 
 
 ##Question 2: What is the average daily activity pattern?
 ### Make a data.frame for mean steps taken per interval across all days
-mean_steps_per_interval_all_days <- activity_data %>%
-    filter(!is.na(steps)) %>%
+mean_steps_per_interval_all_days <- activity_data_no_NA %>%
     select(interval, steps) %>%
     group_by(interval) %>%
     summarise(meanSteps = mean(steps))
@@ -62,7 +61,7 @@ interval_max_steps = mean_steps_per_interval_all_days %>%
     select(interval, meanSteps) %>%
     filter(meanSteps == max(meanSteps))
 
-print(paste("Interval with max average steps per day: ", interval_max_steps$interval))
+print(paste("Interval with max average steps per day:", interval_max_steps$interval))
 
 plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
     geom_vline(xintercept = interval_max_steps$interval, color = "red", lwd = 0.1, linetype = "longdash") +
@@ -75,3 +74,5 @@ plot_time_series_interval_max_steps
 ### Calculate number of missing values
 missing_activity_data <- filter(activity_data,is.na(activity_data$steps))
 print(paste("Number of Observations missing data:", count(missing_activity_data)))
+
+###
