@@ -32,11 +32,11 @@ plot_histogram_total_steps_per_day
 
 ###calculate the mean value of total steps
 meanTotalSteps <- mean(total_steps_per_day$totalSteps)
-print(paste0("Mean total steps per day: ", meanTotalSteps))
+print(paste("Mean total steps per day: ", meanTotalSteps))
 
 ###calculate the mid value of total steps
 midTotalSteps <- median(total_steps_per_day$totalSteps)
-print(paste0("Median total steps per day: ", midTotalSteps))
+print(paste("Median total steps per day: ", midTotalSteps))
 
 
 ##Question 2: What is the average daily activity pattern?
@@ -62,11 +62,16 @@ interval_max_steps = mean_steps_per_interval_all_days %>%
     select(interval, meanSteps) %>%
     filter(meanSteps == max(meanSteps))
 
-print(paste0("Interval with max average steps per day: ", interval_max_steps$interval))
+print(paste("Interval with max average steps per day: ", interval_max_steps$interval))
 
 plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
     geom_vline(xintercept = interval_max_steps$interval, color = "red", lwd = 0.1, linetype = "longdash") +
-    geom_text(aes(x  = interval_max_steps$interval, y = 0), nudge_x = 200, size = 3, label = paste0("Interval: ",interval_max_steps$interval), color = "red") +
+    geom_text(aes(x  = interval_max_steps$interval, y = 0), nudge_x = 200, size = 3, label = paste("Interval: ",interval_max_steps$interval), color = "red") +
     ggsave(filename = "figures/time_series_interval_max_steps.png", width = 5, height = 3)
 
 plot_time_series_interval_max_steps
+
+##Question 3: Inputting missing values
+### Calculate number of missing values
+missing_activity_data <- filter(activity_data,is.na(activity_data$steps))
+print(paste("Number of Observations missing data:", count(missing_activity_data)))
