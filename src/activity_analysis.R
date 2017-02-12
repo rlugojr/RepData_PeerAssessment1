@@ -134,7 +134,7 @@ determineDayType <- function(x) {
 vdetermineDayType <- Vectorize(determineDayType)
 
 ### Create and populate a new column in a new dataset with the revised data and the results of vdetermineDayType(date).
-dayType_activity_data <- mutate(revised_total_steps_per_day, dayType = vdetermineDayType(revised_total_steps_per_day$date))
+dayType_activity_data <- mutate(revised_activity_data, dayType = vdetermineDayType(revised_activity_data$date))
 
 ### make the column a factor with 2 levels.
 dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
