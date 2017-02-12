@@ -105,7 +105,43 @@ print(paste("Revised Mean total steps per day:", revisedMeanTotalSteps))
 revisedMidTotalSteps <- median(revised_total_steps_per_day$totalSteps)
 print(paste("Revised Median total steps per day:", revisedMidTotalSteps))
 
-### Do the values differ from the original mean and mid? Yes, the mid value is now equal to the mean value.
-### What is the impact of imputing missing data on the estimates of the total daily number of steps? The mid value is now equal to the mean value, so the dataset has been corrected by replacing the missing values.
+
+### Do the values differ from the original mean and mid?
+### Yes, the Median and the Mean are equal which means this is a symmetric distribution.
+
+### What is the impact of imputing missing data on the estimates of the total daily number of steps?
+### Calculating Mode to test a hunch
+#getmode function was found here https://www.tutorialspoint.com/r/r_mean_median_mode.htm
+getmode <- function(v) {
+    uniqv <- unique(v)
+    uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+revisedMode <- getmode(revised_total_steps_per_day$totalSteps)
+print(paste("Revised Mode of averaged total steps per day:", revisedMode))
+### The mid value is now equal to the mean value, so the slight skewness that was present initially has been corrected by replacing the missing values with the average total daily steps at each interval.
+### Furthermore, the Mode = Median = Mean, which meets the criteria for a perfect normal distribution.
+### With a normal distribution of interval data, the mean is usually the best measure of central tendency and is why we are using it for our calculatons.
+
+
+##Question #4: Are there differences in activity patterns between weekdays and weekends?
+### Create vectorized function to determine day of week using date and function "weekdays()" then return either "weekday" or "weekend".
+determineDayType <- function(x) {
+    dayOfWeek <- weekdays(x, FALSE)
+    ifelse(is.element(dayOfWeek,c("Saturday","Sunday")),return("weekend"),return("weekday"))
+}
+
+vdetermineDayType <- Vectorize(determineDayType)
+
+### Create and populate a new column in a new dataset with the revised data and the results of vdetermineDayType(date).
+dayType_activity_data <- mutate(revised_total_steps_per_day, dayType = vdetermineDayType(revised_total_steps_per_day$date))
+
+### make the column a factor with 2 levels.
+dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
+
+str(dayType_activity_data)
+
+
+
 
 
