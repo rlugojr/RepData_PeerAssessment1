@@ -22,10 +22,9 @@ total_steps_per_day <- activity_data_no_NA %>%
     summarise(totalSteps = sum(steps))
 
 ### Plot histogram of steps per day.
-plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(date, totalSteps, fill = totalSteps)) +
-    geom_bar(stat = "identity", color = "steelblue") +
-    scale_x_date(date_labels = "%m/%d", date_minor_breaks = "1 day") +
-    labs(title = "Total Steps per Day", x = "Date", y = "Steps") +
+plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x = totalSteps)) +
+    geom_histogram(stat = "bin", bins = 5, binwidth = 5000, color = "darkblue", fill = "steelblue") +
+    labs(title = "Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_total_steps_per_day.png", width = 5, height = 3)
 
 plot_histogram_total_steps_per_day
@@ -61,16 +60,18 @@ interval_max_steps = mean_steps_per_interval_all_days %>%
     select(interval, meanSteps) %>%
     filter(meanSteps == max(meanSteps))
 
-print(paste("Interval with max average steps per day:", interval_max_steps$interval))
+print(paste("Interval #",interval_max_steps$interval,"has the max average steps per day of", interval_max_steps$meanSteps))
 
 plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
     geom_vline(xintercept = interval_max_steps$interval, color = "red", lwd = 0.1, linetype = "longdash") +
-    geom_text(aes(x  = interval_max_steps$interval, y = 0), nudge_x = 200, size = 3, label = paste("Interval: ",interval_max_steps$interval), color = "red") +
+    geom_point(x = interval_max_steps$interval, y = interval_max_steps$meanSteps, pch = 21, size = 0.5, color = "red") +
+    geom_text(aes(x  = interval_max_steps$interval, y = 0), nudge_x = 200, size = 2, label = paste("Interval: ",interval_max_steps$interval), color = "red") +
+    geom_text(aes(x  = interval_max_steps$interval, y = interval_max_steps$meanSteps), nudge_x = 200, size = 2, label = paste("Max:", round(interval_max_steps$meanSteps,2)), color = "red") +
     ggsave(filename = "figures/time_series_interval_max_steps.png", width = 5, height = 3)
 
 plot_time_series_interval_max_steps
 
-##Question 3: Inputting missing values
+##Question 3: Imputing missing values
 ### Calculate and report the number of missing values
 missing_activity_data <- filter(activity_data,is.na(activity_data$steps))
 print(paste("Number of Observations missing data:", count(missing_activity_data)))
@@ -89,10 +90,9 @@ revised_total_steps_per_day <- revised_activity_data %>%
     summarise(totalSteps = sum(steps))
 
 ### Plot histogram of steps per day.
-plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_per_day, aes(date, totalSteps, fill = totalSteps)) +
-    geom_bar(stat = "identity", color = "steelblue") +
-    scale_x_date(date_labels = "%m/%d", date_minor_breaks = "1 day") +
-    labs(title = "Revised Total Steps per Day", x = "Date", y = "Steps") +
+plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_per_day, aes(totalSteps)) +
+    geom_histogram(stat = "bin", bins = 5, binwidth = 5000, color = "darkred", fill = "red") +
+    labs(title = "Revised Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_revised_total_steps_per_day.png", width = 5, height = 3)
 
 plot_histogram_revised_total_steps_per_day
@@ -104,3 +104,8 @@ print(paste("Revised Mean total steps per day:", revisedMeanTotalSteps))
 ###calculate the mid value of total steps
 revisedMidTotalSteps <- median(revised_total_steps_per_day$totalSteps)
 print(paste("Revised Median total steps per day:", revisedMidTotalSteps))
+
+### Do the values differ from the original mean and mid? Yes, the mid value is now equal to the mean value.
+### What is the impact of imputing missing data on the estimates of the total daily number of steps? The mid value is now equal to the mean value, so the dataset has been corrected by replacing the missing values.
+
+
