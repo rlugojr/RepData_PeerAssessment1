@@ -1,8 +1,8 @@
-#Place holder for project info and comments
-#
-#
-#
-#
+#RepData_PeerAssessment1
+#JHU - Reproducible Research
+#Ray lugo, Jr.
+#Purpose:  To create a literate program that can be used to provide the method used for data processing, analysis and
+#visualizations in a form in which the research can be easily reproduced.
 
 #prepare environment
 library(tidyverse)
@@ -158,9 +158,11 @@ dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
 
 ### Plot using "lattice" to match example
 time_series_mean_steps_interval_dayType <-  xyplot(meanSteps ~ interval|dayType, data = dayType_Mean_Total_Steps_by_Interval, type = "l", layout = c(1,2), xlab = "Interval", ylab = "Average Total Steps", main = "Average Total Steps per Interval by Day Type")
-print(time_series_mean_steps_interval_dayType)
-
-png(filename = "figures/time_series_mean_steps_interval_dayType.png", units = "in", width  = 6, height = 5, res = 96)
+#plot(time_series_mean_steps_interval_dayType)
+#note: lattice can only save to the current working directory (unless I missed something), so added steps to change to "figures" dir and then back.
+currwd = getwd()
+setwd(paste0(getwd(),"/figures"))
+png(filename = "time_series_mean_steps_interval_dayType.png", units = "in", width  = 6, height = 5, res = 96)
 print(time_series_mean_steps_interval_dayType)
 dev.off()
-
+setwd(currwd)
