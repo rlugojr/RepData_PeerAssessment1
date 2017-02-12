@@ -7,6 +7,8 @@
 #prepare environment
 library(tidyverse)
 library(lubridate)
+library(lattice)
+library(knitr)
 library(xtable)
 
 #load data from zip
@@ -50,7 +52,7 @@ plot_time_series_mean_steps_per_interval <- ggplot(data = mean_steps_per_interva
     geom_step(color = 'blue', lwd = 0.25) +
     scale_x_continuous(breaks = c(seq(0,2500,250)),minor_breaks = c(seq(0,2500,50))) +
     theme_bw() +
-    labs(title = "Average Steps per Interval", x = "Interval", y = "Average Steps") +
+    labs(title = "Average Total Steps per Interval", x = "Interval", y = "Average Total Steps") +
     ggsave(filename = "figures/time_series_mean_steps_per_interval.png", width = 5, height = 3)
 
 plot_time_series_mean_steps_per_interval
@@ -65,6 +67,7 @@ print(paste("Interval #",interval_max_steps$interval,"has the max average steps 
 plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
     geom_vline(xintercept = interval_max_steps$interval, color = "red", lwd = 0.1, linetype = "longdash") +
     geom_point(x = interval_max_steps$interval, y = interval_max_steps$meanSteps, pch = 21, size = 0.5, color = "red") +
+    labs(title = "Average Total Steps per Interval ", x = "Interval", y = "Average Total Steps") +
     geom_text(aes(x  = interval_max_steps$interval, y = 0), nudge_x = 200, size = 2, label = paste("Interval: ",interval_max_steps$interval), color = "red") +
     geom_text(aes(x  = interval_max_steps$interval, y = interval_max_steps$meanSteps), nudge_x = 200, size = 2, label = paste("Max:", round(interval_max_steps$meanSteps,2)), color = "red") +
     ggsave(filename = "figures/time_series_interval_max_steps.png", width = 5, height = 3)
@@ -139,9 +142,25 @@ dayType_activity_data <- mutate(revised_activity_data, dayType = vdetermineDayTy
 ### make the column a factor with 2 levels.
 dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
 
-str(dayType_activity_data)
+### Calculate average steps by dayType and interval
+dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
+    group_by(dayType, interval) %>%
+    summarise(meanSteps = mean(steps))
 
+# plot_timeline_mean_by_interval_facet_dayType <- ggplot(data = dayType_Mean_Total_Steps_by_Interval, aes(interval, meanSteps)) +
+#     geom_step(color = 'blue', lwd = 0.25) +
+#     scale_x_continuous(breaks = c(seq(0,2500,250)),minor_breaks = c(seq(0,2500,50))) +
+#     facet_grid(dayType ~ .) +
+#     facet_wrap(facets, strip.position = "top") +
+#     theme_bw() +
+#     labs(title = "Average Steps per Interval by Day Type ", x = "Interval", y = "Average Total Steps") +
+#     ggsave(filename = "figures/plot_timeline_mean_by_interval_facet_dayType.png", width = 5, height = 3)
 
+### Plot using "lattice" to match example
+time_series_mean_steps_interval_dayType <-  xyplot(meanSteps ~ interval|dayType, data = dayType_Mean_Total_Steps_by_Interval, type = "l", layout = c(1,2), xlab = "Interval", ylab = "Average Total Steps", main = "Average Total Steps per Interval by Day Type")
+print(time_series_mean_steps_interval_dayType)
 
-
+png(filename = "figures/time_series_mean_steps_interval_dayType.png", units = "in", width  = 6, height = 5, res = 96)
+print(time_series_mean_steps_interval_dayType)
+dev.off()
 
