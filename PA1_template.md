@@ -5,11 +5,12 @@ Ray Lugo, Jr.
 
 ##Purpose
 
-To create a literate program that will document the method used for data processing, analysis and visualization, provided in a form through which the research can be easily reproduced.
+To create a literate program that will document the method used for data processing, analysis and visualization, provided in a form through which the research can be easily understood and reproduced.
 
 ##Prepare environment
 ###Load libraries.
-The libraries used to create this literate program are : Tidyverse (includes Tidyr, dplyr, ggplot2, etc,) for data preparation and visualization, Lattice for use in creating additional visualizations, XTable to display tables in m.
+The libraries used to create this literate program are : Tidyverse (includes Tidyr, dplyr, ggplot2, etc,) for data preparation and visualization, Lattice for additional visualizations, XTable to facilitate the display tables in this document.  Also, a custom CSS file (included in the repo) was used to modify the style for tables and other HTML elements.
+
 
 ```r
 library(tidyverse)
@@ -17,15 +18,20 @@ library(lattice)
 library(knitr)
 library(xtable)
 ```
+
 ###Load data.
-Loading data directly from ZIP archive using Readr.
+The data was loaded directly from ZIP archive using Readr's read_csv function.  This simplified data loading and saves disk space by eliminating the need to extract the data file.
+
 
 ```r
-activity_data <- readr::read_csv(file = "data/activity.zip", col_names = TRUE, col_types = readr::cols(readr::col_integer(),readr::col_date(format = "%Y-%m-%d"),readr::col_integer()))
+activity_data <- readr::read_csv(file = "data/activity.zip", col_names = TRUE,
+    col_types = readr::cols(readr::col_integer(),
+    readr::col_date(format = "%Y-%m-%d"),readr::col_integer()))
 ```
 
-##Question 1: What is mean total number of steps taken per day?
-Make a data.frame for total number of steps per day (excluding NA.)
+##Question 1: What is the mean total number of steps taken per day?
+The first step towards answering this question requires a subset of the data which excludes any incomplete observations (excluding NA) and returns the sum of steps by date.
+
 
 ```r
 activity_data_no_NA <- filter(activity_data,!is.na(activity_data$steps))
@@ -36,22 +42,27 @@ total_steps_per_day <- activity_data_no_NA %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Sun Feb 12 23:27:38 2017 -->
+<!-- Mon Feb 13 02:48:00 2017 -->
 <table border=1>
 <tr> <th>  </th> <th> date </th> <th> totalSteps </th>  </tr>
-  <tr> <td align="right"> 1 </td> <td align="right"> 15615.00 </td> <td align="right"> 126 </td> </tr>
-  <tr> <td align="right"> 2 </td> <td align="right"> 15616.00 </td> <td align="right"> 11352 </td> </tr>
-  <tr> <td align="right"> 3 </td> <td align="right"> 15617.00 </td> <td align="right"> 12116 </td> </tr>
-  <tr> <td align="right"> 4 </td> <td align="right"> 15618.00 </td> <td align="right"> 13294 </td> </tr>
-  <tr> <td align="right"> 5 </td> <td align="right"> 15619.00 </td> <td align="right"> 15420 </td> </tr>
-  <tr> <td align="right"> 6 </td> <td align="right"> 15620.00 </td> <td align="right"> 11015 </td> </tr>
+  <tr> <td align="right"> 1 </td> <td> 2012-10-02 </td> <td align="right"> 126 </td> </tr>
+  <tr> <td align="right"> 2 </td> <td> 2012-10-03 </td> <td align="right"> 11352 </td> </tr>
+  <tr> <td align="right"> 3 </td> <td> 2012-10-04 </td> <td align="right"> 12116 </td> </tr>
+  <tr> <td align="right"> 4 </td> <td> 2012-10-05 </td> <td align="right"> 13294 </td> </tr>
+  <tr> <td align="right"> 5 </td> <td> 2012-10-06 </td> <td align="right"> 15420 </td> </tr>
+  <tr> <td align="right"> 6 </td> <td> 2012-10-07 </td> <td align="right"> 11015 </td> </tr>
+  <tr> <td align="right"> 7 </td> <td> 2012-10-09 </td> <td align="right"> 12811 </td> </tr>
+  <tr> <td align="right"> 8 </td> <td> 2012-10-10 </td> <td align="right"> 9900 </td> </tr>
+  <tr> <td align="right"> 9 </td> <td> 2012-10-11 </td> <td align="right"> 10304 </td> </tr>
+  <tr> <td align="right"> 10 </td> <td> 2012-10-12 </td> <td align="right"> 17382 </td> </tr>
    </table>
 
-Plot histogram of steps per day. 
+Now to plot the histogram of the **Total Steps per Day (totalSteps)** to visualize the distribution.
+
 
 ```r
 plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x = totalSteps)) +
-    geom_histogram(stat = "bin", bins = 5, binwidth = 5000, color = "darkblue", fill = "steelblue") +
+    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkblue", fill = "steelblue") +
     labs(title = "Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_total_steps_per_day.png", width = 5, height = 3)
 
@@ -60,7 +71,9 @@ plot_histogram_total_steps_per_day
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
-calculate the mean value of total steps
+To check the data for outliers which may cause skewing we need to calculate the Mean and Median values.
+First, calculate the **Mean** value of **totalSteps**.
+
 
 ```r
 meanTotalSteps <- mean(total_steps_per_day$totalSteps)
@@ -70,6 +83,9 @@ print(paste("Mean total steps per day:", meanTotalSteps))
 ```
 ## [1] "Mean total steps per day: 10766.1886792453"
 ```
+
+Then, calculate the **Median** value of **totalSteps**.
+
 
 ```r
 ###calculate the mid value of total steps
@@ -81,8 +97,11 @@ print(paste("Median total steps per day:", midTotalSteps))
 ## [1] "Median total steps per day: 10765"
 ```
 
+*There is a very slight difference between the Mean and Median which represents a bit of a skew.*
+
 ##Question 2: What is the average daily activity pattern?
 Make a data.frame for mean steps taken per interval across all days
+
 
 ```r
 mean_steps_per_interval_all_days <- activity_data_no_NA %>%
@@ -107,6 +126,7 @@ Table: total_steps_per_day
 
 Plot meanSteps by interval in time series plot
 
+
 ```r
 plot_time_series_mean_steps_per_interval <- ggplot(data = mean_steps_per_interval_all_days, aes(interval, meanSteps)) +
     geom_step(color = 'blue', lwd = 0.25) +
@@ -118,9 +138,10 @@ plot_time_series_mean_steps_per_interval <- ggplot(data = mean_steps_per_interva
 plot_time_series_mean_steps_per_interval
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 Find the interval with the max average steps per day
+
 
 ```r
 interval_max_steps = mean_steps_per_interval_all_days %>%
@@ -136,6 +157,7 @@ print(paste("Interval #",interval_max_steps$interval,"has the max average steps 
 
 plot vline at interval with max steps
 
+
 ```r
 plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
     geom_vline(xintercept = interval_max_steps$interval, color = "red", lwd = 0.1, linetype = "longdash") +
@@ -148,10 +170,11 @@ plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
 plot_time_series_interval_max_steps
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 ##Question 3: Imputing missing values
 Calculate and report the number of missing values
+
 
 ```r
 missing_activity_data <- filter(activity_data,is.na(activity_data$steps))
@@ -164,6 +187,7 @@ print(paste("Number of Observations missing data:", count(missing_activity_data)
 
 Devise strategy to replace NA values with average steps value for each corresponding interval.
 
+
 ```r
 imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interval_all_days, by = "interval") %>%
     select(steps = meanSteps, date,interval)
@@ -171,11 +195,13 @@ imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interv
 
 Create new dataset that contains original with replaced NA observations.
 
+
 ```r
 revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
 ```
 
 Make a histogram of the total number of steps taken each day using new dataset.
+
 
 ```r
 revised_total_steps_per_day <- revised_activity_data %>%
@@ -186,18 +212,20 @@ revised_total_steps_per_day <- revised_activity_data %>%
 
 Plot histogram of steps per day.
 
+
 ```r
 plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_per_day, aes(totalSteps)) +
-    geom_histogram(stat = "bin", bins = 5, binwidth = 5000, color = "darkred", fill = "red") +
+    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkred", fill = "red") +
     labs(title = "Revised Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_revised_total_steps_per_day.png", width = 5, height = 3)
 
 plot_histogram_revised_total_steps_per_day
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 calculate the mean value of total steps
+
 
 ```r
 revisedMeanTotalSteps <- mean(revised_total_steps_per_day$totalSteps)
@@ -209,6 +237,7 @@ print(paste("Revised Mean total steps per day:", revisedMeanTotalSteps))
 ```
 
 calculate the mid value of total steps
+
 
 ```r
 revisedMidTotalSteps <- median(revised_total_steps_per_day$totalSteps)
@@ -250,6 +279,7 @@ Question #4: Are there differences in activity patterns between weekdays and wee
 
 Create vectorized function to determine day of week using date and function "weekdays()" then return either "weekday" or "weekend".
 
+
 ```r
 determineDayType <- function(x) {
     dayOfWeek <- weekdays(x, FALSE)
@@ -260,6 +290,7 @@ vdetermineDayType <- Vectorize(determineDayType)
 ```
 
 Create and populate a new column in a new dataset with the revised data and the results of vdetermineDayType(date).
+
 
 ```r
 dayType_activity_data <- mutate(revised_activity_data, dayType = vdetermineDayType(revised_activity_data$date))
@@ -278,6 +309,7 @@ dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
 
 Plot using "lattice" to match example
 
+
 ```r
 time_series_mean_steps_interval_dayType <-  xyplot(meanSteps ~ interval|dayType, data = dayType_Mean_Total_Steps_by_Interval, type = "l", layout = c(1,2), xlab = "Interval", ylab = "Average Total Steps", main = "Average Total Steps per Interval by Day Type")
 #plot(time_series_mean_steps_interval_dayType)
@@ -285,4 +317,4 @@ time_series_mean_steps_interval_dayType <-  xyplot(meanSteps ~ interval|dayType,
 time_series_mean_steps_interval_dayType
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-23-1.png)<!-- -->

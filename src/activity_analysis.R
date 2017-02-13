@@ -12,7 +12,8 @@ library(knitr)
 library(xtable)
 
 #load data from zip
-activity_data <- readr::read_csv(file = "data/activity.zip", col_names = TRUE, col_types = readr::cols(readr::col_integer(),readr::col_date(format = "%Y-%m-%d"),readr::col_integer()))
+activity_data <- readr::read_csv(file = "data/activity.zip", col_names = TRUE, col_types = readr::cols(readr::col_integer(),
+    readr::col_date(format = "%Y-%m-%d"),readr::col_integer()))
 
 
 ##Question 1: What is mean total number of steps taken per day?
@@ -22,10 +23,11 @@ total_steps_per_day <- activity_data_no_NA %>%
     select(date, steps) %>%
     group_by(date) %>%
     summarise(totalSteps = sum(steps))
+activity_data_no_NA <- as.data.frame(activity_data_no_NA)
 
 ### Plot histogram of steps per day.
 plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x = totalSteps)) +
-    geom_histogram(stat = "bin", bins = 5, binwidth = 5000, color = "darkblue", fill = "steelblue") +
+    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkblue", fill = "steelblue") +
     labs(title = "Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_total_steps_per_day.png", width = 5, height = 3)
 
@@ -94,7 +96,7 @@ revised_total_steps_per_day <- revised_activity_data %>%
 
 ### Plot histogram of steps per day.
 plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_per_day, aes(totalSteps)) +
-    geom_histogram(stat = "bin", bins = 5, binwidth = 5000, color = "darkred", fill = "red") +
+    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkred", fill = "red") +
     labs(title = "Revised Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_revised_total_steps_per_day.png", width = 5, height = 3)
 
