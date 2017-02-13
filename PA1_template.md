@@ -1,55 +1,26 @@
-# Reproducible Research: Peer Assessment 1
+# Reproducible Research: Assessment 1
+Ray Lugo, Jr.  
+12 Feb 2017  
 
-#RepData_PeerAssessment1
-##JHU - Reproducible Research
-###Ray lugo, Jr.
-Purpose:  To create a literate program that will document the method used for data processing, analysis and visualization, provided in a form through which the research can be easily reproduced.
 
-##Prepare environment: Load libraries, load data.
+##Purpose
+
+To create a literate program that will document the method used for data processing, analysis and visualization, provided in a form through which the research can be easily reproduced.
+
+##Prepare environment
+###Load libraries.
+The libraries used to create this literate program are : Tidyverse (includes Tidyr, dplyr, ggplot2, etc,) for data preparation and visualization, Lattice for use in creating additional visualizations, XTable to display tables in m.
 
 ```r
 library(tidyverse)
-```
-
-```
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-```
-
-```
-## Conflicts with tidy packages ----------------------------------------------
-```
-
-```
-## filter(): dplyr, stats
-## lag():    dplyr, stats
-```
-
-```r
-library(lubridate)
-```
-
-```
-## 
-## Attaching package: 'lubridate'
-```
-
-```
-## The following object is masked from 'package:base':
-## 
-##     date
-```
-
-```r
 library(lattice)
 library(knitr)
 library(xtable)
+```
+###Load data.
+Loading data directly from ZIP archive using Readr.
 
-#load data from zip
+```r
 activity_data <- readr::read_csv(file = "data/activity.zip", col_names = TRUE, col_types = readr::cols(readr::col_integer(),readr::col_date(format = "%Y-%m-%d"),readr::col_integer()))
 ```
 
@@ -62,28 +33,20 @@ total_steps_per_day <- activity_data_no_NA %>%
     select(date, steps) %>%
     group_by(date) %>%
     summarise(totalSteps = sum(steps))
-xtable(summary(total_steps_per_day))
 ```
 
-```
-## % latex table generated in R 3.3.2 by xtable 1.8-2 package
-## % Sun Feb 12 12:03:51 2017
-## \begin{table}[ht]
-## \centering
-## \begin{tabular}{rll}
-##   \hline
-##  &      date &   totalSteps \\ 
-##   \hline
-## 1 & Min.   :2012-10-02   & Min.   :   41   \\ 
-##   2 & 1st Qu.:2012-10-16   & 1st Qu.: 8841   \\ 
-##   3 & Median :2012-10-29   & Median :10765   \\ 
-##   4 & Mean   :2012-10-30   & Mean   :10766   \\ 
-##   5 & 3rd Qu.:2012-11-16   & 3rd Qu.:13294   \\ 
-##   6 & Max.   :2012-11-29   & Max.   :21194   \\ 
-##    \hline
-## \end{tabular}
-## \end{table}
-```
+<!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
+<!-- Sun Feb 12 23:27:38 2017 -->
+<table border=1>
+<tr> <th>  </th> <th> date </th> <th> totalSteps </th>  </tr>
+  <tr> <td align="right"> 1 </td> <td align="right"> 15615.00 </td> <td align="right"> 126 </td> </tr>
+  <tr> <td align="right"> 2 </td> <td align="right"> 15616.00 </td> <td align="right"> 11352 </td> </tr>
+  <tr> <td align="right"> 3 </td> <td align="right"> 15617.00 </td> <td align="right"> 12116 </td> </tr>
+  <tr> <td align="right"> 4 </td> <td align="right"> 15618.00 </td> <td align="right"> 13294 </td> </tr>
+  <tr> <td align="right"> 5 </td> <td align="right"> 15619.00 </td> <td align="right"> 15420 </td> </tr>
+  <tr> <td align="right"> 6 </td> <td align="right"> 15620.00 </td> <td align="right"> 11015 </td> </tr>
+   </table>
+
 Plot histogram of steps per day. 
 
 ```r
@@ -95,7 +58,7 @@ plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x =
 plot_histogram_total_steps_per_day
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 calculate the mean value of total steps
 
@@ -126,28 +89,21 @@ mean_steps_per_interval_all_days <- activity_data_no_NA %>%
     select(interval, steps) %>%
     group_by(interval) %>%
     summarise(meanSteps = mean(steps))
-xtable(summary(mean_steps_per_interval_all_days))
+kable(summary(mean_steps_per_interval_all_days), caption = "total_steps_per_day", digits = 2, type = "html")
 ```
 
-```
-## % latex table generated in R 3.3.2 by xtable 1.8-2 package
-## % Sun Feb 12 12:03:52 2017
-## \begin{table}[ht]
-## \centering
-## \begin{tabular}{rll}
-##   \hline
-##  &    interval &   meanSteps \\ 
-##   \hline
-## 1 & Min.   :   0.0   & Min.   :  0.000   \\ 
-##   2 & 1st Qu.: 588.8   & 1st Qu.:  2.486   \\ 
-##   3 & Median :1177.5   & Median : 34.113   \\ 
-##   4 & Mean   :1177.5   & Mean   : 37.383   \\ 
-##   5 & 3rd Qu.:1766.2   & 3rd Qu.: 52.835   \\ 
-##   6 & Max.   :2355.0   & Max.   :206.170   \\ 
-##    \hline
-## \end{tabular}
-## \end{table}
-```
+
+
+Table: total_steps_per_day
+
+        interval        meanSteps     
+---  ---------------  ----------------
+     Min.   :   0.0   Min.   :  0.000 
+     1st Qu.: 588.8   1st Qu.:  2.486 
+     Median :1177.5   Median : 34.113 
+     Mean   :1177.5   Mean   : 37.383 
+     3rd Qu.:1766.2   3rd Qu.: 52.835 
+     Max.   :2355.0   Max.   :206.170 
 
 Plot meanSteps by interval in time series plot
 
@@ -162,7 +118,7 @@ plot_time_series_mean_steps_per_interval <- ggplot(data = mean_steps_per_interva
 plot_time_series_mean_steps_per_interval
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 Find the interval with the max average steps per day
 
@@ -192,7 +148,7 @@ plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
 plot_time_series_interval_max_steps
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 ##Question 3: Imputing missing values
 Calculate and report the number of missing values
@@ -239,7 +195,7 @@ plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_
 plot_histogram_revised_total_steps_per_day
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 calculate the mean value of total steps
 
@@ -301,17 +257,6 @@ determineDayType <- function(x) {
 }
 
 vdetermineDayType <- Vectorize(determineDayType)
-head(vdetermineDayType)
-```
-
-```
-##                                                                       
-## 1 function (x)                                                        
-## 2 {                                                                   
-## 3     args <- lapply(as.list(match.call())[-1L], eval, parent.frame())
-## 4     names <- if (is.null(names(args)))                              
-## 5         character(length(args))                                     
-## 6     else names(args)
 ```
 
 Create and populate a new column in a new dataset with the revised data and the results of vdetermineDayType(date).
@@ -340,4 +285,4 @@ time_series_mean_steps_interval_dayType <-  xyplot(meanSteps ~ interval|dayType,
 time_series_mean_steps_interval_dayType
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-22-1.png)<!-- -->

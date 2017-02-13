@@ -1,34 +1,51 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
+title: "Reproducible Research: Assessment 1"
+author: "Ray Lugo, Jr."
+date: "12 Feb 2017"
 output: 
   html_document:
-    keep_md: true
+    css: custom.css
+    df_print: kable
+    fig_height: 5
+    fig_width: 7
+    keep_md: yes
 ---
-###Ray lugo, Jr.
-Purpose:  To create a literate program that will document the method used for data processing, analysis and visualization, provided in a form through which the research can be easily reproduced.
 
-##Prepare environment: Load libraries, load data.
-```{r}
+
+##Purpose
+
+To create a literate program that will document the method used for data processing, analysis and visualization, provided in a form through which the research can be easily reproduced.
+
+##Prepare environment
+###Load libraries.
+The libraries used to create this literate program are : Tidyverse (includes Tidyr, dplyr, ggplot2, etc,) for data preparation and visualization, Lattice for use in creating additional visualizations, XTable to display tables in m.
+```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
-library(lubridate)
 library(lattice)
 library(knitr)
 library(xtable)
-
-#load data from zip
+```
+###Load data.
+Loading data directly from ZIP archive using Readr.
+```{r}
 activity_data <- readr::read_csv(file = "data/activity.zip", col_names = TRUE, col_types = readr::cols(readr::col_integer(),readr::col_date(format = "%Y-%m-%d"),readr::col_integer()))
 ```
 
 ##Question 1: What is mean total number of steps taken per day?
 Make a data.frame for total number of steps per day (excluding NA.)
-```{r}
+```{r  message=FALSE, warning=FALSE}
 activity_data_no_NA <- filter(activity_data,!is.na(activity_data$steps))
 total_steps_per_day <- activity_data_no_NA %>%
     select(date, steps) %>%
     group_by(date) %>%
     summarise(totalSteps = sum(steps))
-xtable(summary(total_steps_per_day))
 ```
+
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printObj <- xtable(head(total_steps_per_day))
+print(printObj, type = "html", caption = "total_steps_per_day", caption.placement = "top", digits = 2)
+```
+
 Plot histogram of steps per day. 
 ```{r}
 plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x = totalSteps)) +
@@ -56,7 +73,7 @@ mean_steps_per_interval_all_days <- activity_data_no_NA %>%
     select(interval, steps) %>%
     group_by(interval) %>%
     summarise(meanSteps = mean(steps))
-xtable(summary(mean_steps_per_interval_all_days))
+kable(summary(mean_steps_per_interval_all_days), caption = "total_steps_per_day", digits = 2, type = "html")
 ```
 
 Plot meanSteps by interval in time series plot
@@ -173,7 +190,6 @@ determineDayType <- function(x) {
 }
 
 vdetermineDayType <- Vectorize(determineDayType)
-head(vdetermineDayType)
 ```
 
 Create and populate a new column in a new dataset with the revised data and the results of vdetermineDayType(date).
