@@ -5,11 +5,11 @@ Ray Lugo, Jr.
 
 ##Purpose
 
-To create a literate program that will document the methods used for data processing, analysis and visualization, provided in a form through which the research can be easily understood and reproduced.
+To create a literate program that documents the methods used for data processing, analysis and visualization, provided in a form through which the research can be easily understood and reproduced.
 
 ##Prepare environment
 ###Load libraries.
-The libraries used to create this literate program are : Tidyverse (includes Tidyr, dplyr, ggplot2, etc,) for data preparation and visualization, Lattice for additional visualizations, XTable to facilitate the display tables in this document.  Also, a custom CSS file (included in the repo) was used to modify the style for tables and other HTML elements.
+The libraries used to create this literate program are : Tidyverse (includes Tidyr, dplyr, ggplot2, etc,) for data preparation and visualization, Lattice for additional visualizations, knitr to generate the markdown and HTML documents and XTable to facilitate the display tables in this document.  Also, a custom CSS file (included in the repo) was used to modify the style for tables and other HTML elements.
 
 
 ```r
@@ -44,7 +44,7 @@ total_steps_per_day <- activity_data_no_NA %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:40 2017 -->
+<!-- Tue Feb 14 01:34:49 2017 -->
 <table border=1>
 <caption align="bottom"> total_steps_per_day </caption>
 <tr> <th>  </th> <th> date </th> <th> totalSteps </th>  </tr>
@@ -62,9 +62,9 @@ total_steps_per_day <- activity_data_no_NA %>%
 
 
 
-Now to plot the histogram of the **Total Steps per Day (totalSteps)** to visualize the distribution.  To determine the number of bins which may be optimal for analysis, I've used the square root of the range of the variable, applying the ceiling method of rounding in order to get a whole number that is larger than the variable's max value.
+Now we can plot the histogram of the **Total Steps per Day (totalSteps)** to visualize the distribution.  To determine the number of bins which may be optimal for analysis, I've used the square root of the range of the variable, applying the ceiling method of rounding in order to get a whole number that is larger than the variable's max value.
 
-The bin-size may have required a custom function or locating an existing package, however since we only had one Histogram I chose to divide the max value by the number of bins previously calculated and the result was rounded up to the next hundred, resulting in a bin width = 3,100.
+The bin-size will require a custom function or an existing package, however, since we only had one Histogram, I chose to divide the max value by the number of bins previously calculated and the result was rounded up to the next hundred, resulting in a bin width = 3,100.
 
 
 ```r
@@ -83,7 +83,7 @@ plot_histogram_total_steps_per_day
 
 Although we can visually identify that the bins with the largest number of values are in the center of the graph, those 2 bins can account for up to 6,200 values so it is highly unlikely that we can guess the exact value at the center of the distribution. We can, however, determine the central value by calculating the measures of central tendency.
 
-The Mean and Median values are measures of central tendency and comparing the two would allow us to gauge the strength or weakness of the central tendency for this distribution. This being the latter case, the comparison of Mean and Median values would provide us with the size and direction of skew.  As the skew increases, so does variablity in the data set and the chance of finding a valid center, preventing it from being a symmetrical distribution.
+The Mean and Median values are measures of central tendency and comparing the two would allow us to gauge the strength or weakness of the central tendency for this distribution. This being the latter case, the comparison of Mean and Median values would provide us with the amount of variation or size and direction of skew.  As the skew increases the histogram leans to one side or the other.  This make finding a valid center difficult, perhaps preventing any adjustment to the data which could create the balance needed for a strong central tendency. This leads to choosing the best measure of central tendency between Mean, Median and Mode for the given application of the distribution (Discrete or Continuous, etc.)
 
 First, calculate the **Mean** value of **totalSteps**.
 
@@ -110,7 +110,7 @@ print(paste("Median total steps per day:", midTotalSteps))
 ## [1] "Median total steps per day: 10765"
 ```
 
-*There is a very slight difference between the Mean and Median which represents a slight skew.*
+*There is a very small difference between the Mean and Median which prevents this from being true symmetric distribution.*
 
 ##Question 2: What is the average daily activity pattern?
 
@@ -125,7 +125,7 @@ mean_steps_per_interval_all_days <- activity_data_no_NA %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:41 2017 -->
+<!-- Tue Feb 14 01:34:50 2017 -->
 <table border=1>
 <caption align="bottom"> mean_steps_per_interval_all_days </caption>
 <tr> <th>  </th> <th> interval </th> <th> meanSteps </th>  </tr>
@@ -157,7 +157,7 @@ plot_time_series_mean_steps_per_interval
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
-Find the interval with the max average steps per day
+To identify the interval with the highest average steps per day, filter the data set to get the interval with the MAX meanSteps value.
 
 
 ```r
@@ -172,7 +172,7 @@ print(paste("Interval #",interval_max_steps$interval,"has the max average steps 
 ## [1] "Interval # 835 has the max average steps per day of 206.169811320755"
 ```
 
-plot vline at interval with max steps
+Plot a red vertical line, red point on the value and label both to identify the interval with max steps on the timeseries visualization.
 
 
 ```r
@@ -189,8 +189,9 @@ plot_time_series_interval_max_steps
 
 ![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
 
-##Question 3: Imputing missing values
-Calculate and report the number of missing values
+##Question 3: Which method can be used for Imputing missing values.
+
+Create a subset of the incomplete observations from the original dataset.  Then, calculate and report the number of missing values.
 
 
 ```r
@@ -203,7 +204,7 @@ print(paste("Number of Observations missing data:", count(missing_activity_data)
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:42 2017 -->
+<!-- Tue Feb 14 01:34:52 2017 -->
 <table border=1>
 <caption align="bottom"> missing_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
@@ -219,7 +220,7 @@ print(paste("Number of Observations missing data:", count(missing_activity_data)
   <tr> <td align="right"> 10 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">  45 </td> </tr>
    </table>
 
-Devise strategy to replace NA values with average steps value for each corresponding interval.
+The strategy used to impute values in the incomplete observations is to replace the NA with previously calculated average total steps value for each respective  interval.  This can be done by joining the dataset of incomplete observations with the dataset of average total steps using the interval value which is in both datasets. Then we can create a dataset with the replacement values.
 
 
 ```r
@@ -228,7 +229,7 @@ imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interv
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:42 2017 -->
+<!-- Tue Feb 14 01:34:52 2017 -->
 <table border=1>
 <caption align="bottom"> imputed_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
@@ -244,7 +245,7 @@ imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interv
   <tr> <td align="right"> 10 </td> <td align="right"> 1.47 </td> <td> 2012-10-01 </td> <td align="right">  45 </td> </tr>
    </table>
 
-Create new dataset that contains original with replaced NA observations.
+A new dataset is then created using the rows from the original dataset, minus the incomplete observations and appending the rows from the imputed, replacement dataset.
 
 
 ```r
@@ -252,7 +253,7 @@ revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:42 2017 -->
+<!-- Tue Feb 14 01:34:52 2017 -->
 <table border=1>
 <caption align="bottom"> revised_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
@@ -268,7 +269,7 @@ revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
   <tr> <td align="right"> 10 </td> <td align="right"> 519.00 </td> <td> 2012-10-03 </td> <td align="right"> 610 </td> </tr>
    </table>
 
-Make a histogram of the total number of steps taken each day using new dataset.
+This dataset will need to be grouped by date and sum the steps to create the necessary totalSteps per day data required for the histogram.
 
 
 ```r
@@ -279,7 +280,7 @@ revised_total_steps_per_day <- revised_activity_data %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:43 2017 -->
+<!-- Tue Feb 14 01:34:52 2017 -->
 <table border=1>
 <caption align="bottom"> revised_total_steps_per_day </caption>
 <tr> <th>  </th> <th> date </th> <th> totalSteps </th>  </tr>
@@ -295,7 +296,7 @@ revised_total_steps_per_day <- revised_activity_data %>%
   <tr> <td align="right"> 10 </td> <td> 2012-10-10 </td> <td align="right"> 9900.00 </td> </tr>
    </table>
 
-Plot histogram of steps per day.
+Then, create the histogram of the total number of steps taken each day using the newly created, aggregated, "complete" dataset.
 
 
 ```r
@@ -312,7 +313,7 @@ plot_histogram_revised_total_steps_per_day
 
 ![](PA1_template_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
-calculate the mean value of total steps
+Again, calculate the **Mean** value of total steps
 
 
 ```r
@@ -324,7 +325,7 @@ print(paste("Revised Mean total steps per day:", revisedMeanTotalSteps))
 ## [1] "Revised Mean total steps per day: 10766.1886792453"
 ```
 
-calculate the mid value of total steps
+calculate the **Median** value of total steps.
 
 
 ```r
@@ -336,11 +337,11 @@ print(paste("Revised Median total steps per day:", revisedMidTotalSteps))
 ## [1] "Revised Median total steps per day: 10766.1886792453"
 ```
 
-Do the values differ from the original mean and mid?
+###Do the values differ from the original mean and mid?
 Yes, the Median and the Mean are equal which means this is a symmetric distribution.
 
-What is the impact of imputing missing data on the estimates of the total daily number of steps?
-Calculating Mode to test a hunch
+###What is the impact of imputing missing data on the estimates of the total daily number of steps?
+To be thorough in our answer, we need to calculate the final measure of central tendency, the Mode, which will allow us to further test the strength of the central distribution.
 
 
 ```r
@@ -351,21 +352,22 @@ getmode <- function(v) {
 }
 
 revisedMode <- getmode(revised_total_steps_per_day$totalSteps)
-print(paste("Revised Mode of averaged total steps per day:", revisedMode))
+print(paste("The Mode of averaged total steps per day:", revisedMode))
 ```
 
 ```
-## [1] "Revised Mode of averaged total steps per day: 10766.1886792453"
+## [1] "The Mode of averaged total steps per day: 10766.1886792453"
 ```
 
-The mid value is now equal to the mean value, so the slight skewness that was present initially has been corrected by replacing the missing values with the average total daily steps at each interval.
-Furthermore, the Mode = Median = Mean, which meets the criteria for a perfect normal distribution.
-With a normal distribution of interval data, the mean is usually the best measure of central tendency and is why we are using it for our calculatons.
+The **Mean** value is now equal to the **Median** value, so the slight skewness that was present initially has been corrected by replacing the missing values with the average total daily steps at each interval.
+
+Furthermore, **the Mode = Median = Mean**, which meets the criteria for a perfectly symmetical central distribution.
+With a symmetric distribution of continuous interval data, the Mean is usually the best measure of central tendency and is why we are using its value as the basis  for our calculatons.
 
 
-Question #4: Are there differences in activity patterns between weekdays and weekends?
+##Question #4: Are there differences in activity patterns between weekdays and weekends?
 
-Create vectorized function to determine day of week using date and function "weekdays()" then return either "weekday" or "weekend".
+To answer this, I created a vectorized function, necessary for compatibility with dplyr functions, to determine the day of week using the function "weekdays()" on the date value and then return either "weekday" or "weekend".
 
 
 ```r
@@ -377,7 +379,7 @@ determineDayType <- function(x) {
 vdetermineDayType <- Vectorize(determineDayType)
 ```
 
-Create and populate a new column in a new dataset with the revised data and the results of vdetermineDayType(date).
+Then, using mutate(), create and populate a new column in the revised dataset to hold the results of the new function, vdetermineDayType(date).
 
 
 ```r
@@ -388,7 +390,7 @@ dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:45 2017 -->
+<!-- Tue Feb 14 01:34:55 2017 -->
 <table border=1>
 <caption align="bottom"> dayType_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th> <th> dayType </th>  </tr>
@@ -404,6 +406,8 @@ dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
   <tr> <td align="right"> 10 </td> <td align="right"> 0.00 </td> <td> 2012-10-02 </td> <td align="right">  45 </td> <td> weekday </td> </tr>
    </table>
 
+Prepare the data for visualization of the answer, grouping by the interval and Type of Day (weekend or weekday) and calculate the mean of the total steps for each group combination.
+
 
 
 ```r
@@ -414,7 +418,7 @@ dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:44:45 2017 -->
+<!-- Tue Feb 14 01:34:55 2017 -->
 <table border=1>
 <caption align="bottom"> dayType_Mean_Total_Steps_by_Interval </caption>
 <tr> <th>  </th> <th> dayType </th> <th> interval </th> <th> meanSteps </th>  </tr>
@@ -430,7 +434,7 @@ dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
   <tr> <td align="right"> 10 </td> <td> weekday </td> <td align="right">  45 </td> <td align="right"> 1.80 </td> </tr>
    </table>
 
-Plot using "lattice" to match example
+Plot using "lattice" to create a visualization with facets, one over the other for simple visual comparison.
 
 
 ```r
@@ -445,3 +449,5 @@ time_series_mean_steps_interval_dayType
 We can see from the comparison of the two visualizations that the subject's pattern has a slight shift to the right on weekends.  Based on the average observations, they are more active later in the morning and remain very active until later at night on a weekend than on weekdays.
 
 The weekday displays a higher level of activity at first, then a rapid and severe drop in activity that remains low to moderate for the duration of the day and night, leading to an earlier drop in activity in the last intervals, slowing activity much sooner than during the weekend. 
+
+Next steps for analysis would be to tie the intervals to the 24 hour time in order to see the activity through the day with the time as reference points.  An understanding of the types of activity that generate higher levels would provide more insight as to the subject's average daily patterns on the weekday vs. the weekend.
