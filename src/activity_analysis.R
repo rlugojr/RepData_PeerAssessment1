@@ -6,7 +6,6 @@
 
 #prepare environment
 library(tidyverse)
-library(lubridate)
 library(lattice)
 library(knitr)
 library(xtable)
@@ -23,11 +22,14 @@ total_steps_per_day <- activity_data_no_NA %>%
     select(date, steps) %>%
     group_by(date) %>%
     summarise(totalSteps = sum(steps))
-activity_data_no_NA <- as.data.frame(activity_data_no_NA)
 
 ### Plot histogram of steps per day.
+numBins <- ceiling(sqrt(range(total_steps_per_day$totalSteps)))
+#binSize = round_any((max(total_steps_per_day$totalSteps) - min(total_steps_per_day$totalSteps))/7,100, f = ceiling) #uses plyr
+binSize <- 3100
+
 plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x = totalSteps)) +
-    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkblue", fill = "steelblue") +
+    geom_histogram(stat = "bin", bins = numBins, binwidth = binSize, color = "darkblue", fill = "steelblue") +
     labs(title = "Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_total_steps_per_day.png", width = 5, height = 3)
 
@@ -96,7 +98,7 @@ revised_total_steps_per_day <- revised_activity_data %>%
 
 ### Plot histogram of steps per day.
 plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_per_day, aes(totalSteps)) +
-    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkred", fill = "red") +
+    geom_histogram(stat = "bin", bins = numBins, binwidth = binSize, color = "darkred", fill = "red") +
     labs(title = "Revised Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_revised_total_steps_per_day.png", width = 5, height = 3)
 

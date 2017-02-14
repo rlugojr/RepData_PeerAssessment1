@@ -5,7 +5,7 @@ Ray Lugo, Jr.
 
 ##Purpose
 
-To create a literate program that will document the method used for data processing, analysis and visualization, provided in a form through which the research can be easily understood and reproduced.
+To create a literate program that will document the methods used for data processing, analysis and visualization, provided in a form through which the research can be easily understood and reproduced.
 
 ##Prepare environment
 ###Load libraries.
@@ -18,6 +18,8 @@ library(lattice)
 library(knitr)
 library(xtable)
 ```
+
+
 
 ###Load data.
 The data was loaded directly from ZIP archive using Readr's read_csv function.  This simplified data loading and saves disk space by eliminating the need to extract the data file.
@@ -42,7 +44,7 @@ total_steps_per_day <- activity_data_no_NA %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 02:48:00 2017 -->
+<!-- Mon Feb 13 22:55:16 2017 -->
 <table border=1>
 <tr> <th>  </th> <th> date </th> <th> totalSteps </th>  </tr>
   <tr> <td align="right"> 1 </td> <td> 2012-10-02 </td> <td align="right"> 126 </td> </tr>
@@ -57,21 +59,28 @@ total_steps_per_day <- activity_data_no_NA %>%
   <tr> <td align="right"> 10 </td> <td> 2012-10-12 </td> <td align="right"> 17382 </td> </tr>
    </table>
 
-Now to plot the histogram of the **Total Steps per Day (totalSteps)** to visualize the distribution.
+
+
+Now to plot the histogram of the **Total Steps per Day (totalSteps)** to visualize the distribution.  To determine the number of bins which may be optimal for analysis, I've used the square root of the range of the variable, applying the ceiling method of rounding in order to get a whole number that is larger than the variable's max value.
+The bin-size may have required a custom function or locating an existing package, however since we only had one Histogram I chose to divide the max value by the number of bins previously calculated and the result was rounded up to the next hundred, resulting in a bin width = 3,100.
 
 
 ```r
+numBins <- 1 + ceiling(sqrt(range(total_steps_per_day$totalSteps)))
+binSize <- 3100
+
 plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x = totalSteps)) +
-    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkblue", fill = "steelblue") +
+    geom_histogram(stat = "bin", bins = numBins, binwidth = binSize, color = "darkblue", fill = "steelblue") +
     labs(title = "Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_total_steps_per_day.png", width = 5, height = 3)
 
 plot_histogram_total_steps_per_day
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
-To check the data for outliers which may cause skewing we need to calculate the Mean and Median values.
+Although we can visually identify that the bins with the largest number of values are in the center of the graph, those 2 bins can account for up to 6,200 values so it is highly unlikely that we can guess the exact value at the center of the distribution. We can, however, determine the central value by calculating the measures of central tendency.  The Mean and Median values are measures of central tendency and comparing the two would allow us to gauge the strength or weakness of the central tendency for this distribution. This being the latter case, the comparison of Mean and Median values would provide us with the size and direction of skew.  As the skew increases, so does variablity in the data set and the chance of finding a valid center, preventing it from being a symmetrical distribution.
+
 First, calculate the **Mean** value of **totalSteps**.
 
 
@@ -97,10 +106,11 @@ print(paste("Median total steps per day:", midTotalSteps))
 ## [1] "Median total steps per day: 10765"
 ```
 
-*There is a very slight difference between the Mean and Median which represents a bit of a skew.*
+*There is a very slight difference between the Mean and Median which represents a slight skew.*
 
 ##Question 2: What is the average daily activity pattern?
-Make a data.frame for mean steps taken per interval across all days
+
+Create a subset from the original dataset, minus the incomplete observations, and group the subset by interval, calculating the average of the number of steps in each interval.  The result is  a dataset with interval and meanSteps, across all date values. Date is not a grouping in this set, it is ignored in order to focus on the relationship of the interval and average of the number of steps.
 
 
 ```r
@@ -124,7 +134,7 @@ Table: total_steps_per_day
      3rd Qu.:1766.2   3rd Qu.: 52.835 
      Max.   :2355.0   Max.   :206.170 
 
-Plot meanSteps by interval in time series plot
+Create the timeseries plot using the interval as the x value and the meanSteps as the continuous y value.
 
 
 ```r
@@ -138,7 +148,7 @@ plot_time_series_mean_steps_per_interval <- ggplot(data = mean_steps_per_interva
 plot_time_series_mean_steps_per_interval
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 Find the interval with the max average steps per day
 
@@ -170,7 +180,7 @@ plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
 plot_time_series_interval_max_steps
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 ##Question 3: Imputing missing values
 Calculate and report the number of missing values
@@ -214,15 +224,18 @@ Plot histogram of steps per day.
 
 
 ```r
+numBins <- 1 + ceiling(sqrt(range(revised_total_steps_per_day$totalSteps)))
+binSize <- 3100
+
 plot_histogram_revised_total_steps_per_day <- ggplot(data = revised_total_steps_per_day, aes(totalSteps)) +
-    geom_histogram(stat = "bin", bins = 25, binwidth = 1000, color = "darkred", fill = "red") +
+    geom_histogram(stat = "bin", bins = numBins, binwidth = binSize, color = "darkred", fill = "red") +
     labs(title = "Revised Total Steps per Day", x = "Total Steps Taken", y = "Count") +
     ggsave(filename = "figures/histogram_revised_total_steps_per_day.png", width = 5, height = 3)
 
 plot_histogram_revised_total_steps_per_day
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
 
 calculate the mean value of total steps
 
@@ -317,4 +330,4 @@ time_series_mean_steps_interval_dayType <-  xyplot(meanSteps ~ interval|dayType,
 time_series_mean_steps_interval_dayType
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
