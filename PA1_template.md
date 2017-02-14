@@ -44,8 +44,9 @@ total_steps_per_day <- activity_data_no_NA %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:26 2017 -->
+<!-- Mon Feb 13 23:44:40 2017 -->
 <table border=1>
+<caption align="bottom"> total_steps_per_day </caption>
 <tr> <th>  </th> <th> date </th> <th> totalSteps </th>  </tr>
   <tr> <td align="right"> 1 </td> <td> 2012-10-02 </td> <td align="right"> 126 </td> </tr>
   <tr> <td align="right"> 2 </td> <td> 2012-10-03 </td> <td align="right"> 11352 </td> </tr>
@@ -124,8 +125,9 @@ mean_steps_per_interval_all_days <- activity_data_no_NA %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:26 2017 -->
+<!-- Mon Feb 13 23:44:41 2017 -->
 <table border=1>
+<caption align="bottom"> mean_steps_per_interval_all_days </caption>
 <tr> <th>  </th> <th> interval </th> <th> meanSteps </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right">   0 </td> <td align="right"> 1.72 </td> </tr>
   <tr> <td align="right"> 2 </td> <td align="right">   5 </td> <td align="right"> 0.34 </td> </tr>
@@ -201,8 +203,9 @@ print(paste("Number of Observations missing data:", count(missing_activity_data)
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:42 2017 -->
 <table border=1>
+<caption align="bottom"> missing_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">   0 </td> </tr>
   <tr> <td align="right"> 2 </td> <td align="right">  </td> <td> 2012-10-01 </td> <td align="right">   5 </td> </tr>
@@ -225,8 +228,9 @@ imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interv
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:42 2017 -->
 <table border=1>
+<caption align="bottom"> imputed_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right"> 1.72 </td> <td> 2012-10-01 </td> <td align="right">   0 </td> </tr>
   <tr> <td align="right"> 2 </td> <td align="right"> 0.34 </td> <td> 2012-10-01 </td> <td align="right">   5 </td> </tr>
@@ -248,8 +252,9 @@ revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:42 2017 -->
 <table border=1>
+<caption align="bottom"> revised_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right"> 117.00 </td> <td> 2012-10-02 </td> <td align="right"> 2210 </td> </tr>
   <tr> <td align="right"> 2 </td> <td align="right"> 9.00 </td> <td> 2012-10-02 </td> <td align="right"> 2215 </td> </tr>
@@ -263,7 +268,6 @@ revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
   <tr> <td align="right"> 10 </td> <td align="right"> 519.00 </td> <td> 2012-10-03 </td> <td align="right"> 610 </td> </tr>
    </table>
 
-
 Make a histogram of the total number of steps taken each day using new dataset.
 
 
@@ -275,8 +279,9 @@ revised_total_steps_per_day <- revised_activity_data %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:43 2017 -->
 <table border=1>
+<caption align="bottom"> revised_total_steps_per_day </caption>
 <tr> <th>  </th> <th> date </th> <th> totalSteps </th>  </tr>
   <tr> <td align="right"> 1 </td> <td> 2012-10-01 </td> <td align="right"> 10766.19 </td> </tr>
   <tr> <td align="right"> 2 </td> <td> 2012-10-02 </td> <td align="right"> 126.00 </td> </tr>
@@ -383,8 +388,9 @@ dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:31 2017 -->
+<!-- Mon Feb 13 23:44:45 2017 -->
 <table border=1>
+<caption align="bottom"> dayType_activity_data </caption>
 <tr> <th>  </th> <th> steps </th> <th> date </th> <th> interval </th> <th> dayType </th>  </tr>
   <tr> <td align="right"> 1 </td> <td align="right"> 0.00 </td> <td> 2012-10-02 </td> <td align="right">   0 </td> <td> weekday </td> </tr>
   <tr> <td align="right"> 2 </td> <td align="right"> 0.00 </td> <td> 2012-10-02 </td> <td align="right">   5 </td> <td> weekday </td> </tr>
@@ -408,8 +414,9 @@ dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
 ```
 
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:31 2017 -->
+<!-- Mon Feb 13 23:44:45 2017 -->
 <table border=1>
+<caption align="bottom"> dayType_Mean_Total_Steps_by_Interval </caption>
 <tr> <th>  </th> <th> dayType </th> <th> interval </th> <th> meanSteps </th>  </tr>
   <tr> <td align="right"> 1 </td> <td> weekday </td> <td align="right">   0 </td> <td align="right"> 2.25 </td> </tr>
   <tr> <td align="right"> 2 </td> <td> weekday </td> <td align="right">   5 </td> <td align="right"> 0.45 </td> </tr>

@@ -29,12 +29,12 @@ library(xtable)
 
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable <- function(dfTable, hasDate){
+printTable <- function(dfTable, hasDate = FALSE, printCaption = ""){
         print_table <- as.data.frame(dfTable)
     if (hasDate) {
         print_table$date <- as.character(print_table$date)
     }
-    printObj <<- xtable(print_table[1:10,])
+    printObj <<- xtable(print_table[1:10,], caption = printCaption)
     rm(print_table) #cleanup
 }
 ```
@@ -59,7 +59,7 @@ total_steps_per_day <- activity_data_no_NA %>%
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(total_steps_per_day, TRUE)
+printTable(total_steps_per_day, TRUE, "total_steps_per_day")
 print(printObj, type = "html")
 ```
 
@@ -114,7 +114,7 @@ mean_steps_per_interval_all_days <- activity_data_no_NA %>%
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(mean_steps_per_interval_all_days, FALSE)
+printTable(mean_steps_per_interval_all_days, FALSE, "mean_steps_per_interval_all_days")
 print(printObj, type = "html")
 ```
 
@@ -164,7 +164,7 @@ print(paste("Number of Observations missing data:", count(missing_activity_data)
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(missing_activity_data, TRUE)
+printTable(missing_activity_data, TRUE, "missing_activity_data")
 print(printObj, type = "html")
 ```
 
@@ -176,7 +176,7 @@ imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interv
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(imputed_activity_data, TRUE)
+printTable(imputed_activity_data, TRUE, "imputed_activity_data")
 print(printObj, type = "html")
 ```
 
@@ -187,10 +187,9 @@ revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(filter(revised_activity_data, steps > 0), TRUE)
+printTable(filter(revised_activity_data, steps > 0), TRUE, "revised_activity_data")
 print(printObj, type = "html")
 ```
-
 
 Make a histogram of the total number of steps taken each day using new dataset.
 
@@ -202,7 +201,7 @@ revised_total_steps_per_day <- revised_activity_data %>%
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(revised_total_steps_per_day, TRUE)
+printTable(revised_total_steps_per_day, TRUE, "revised_total_steps_per_day")
 print(printObj, type = "html")
 ```
 
@@ -279,7 +278,7 @@ dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(dayType_activity_data, TRUE)
+printTable(dayType_activity_data, TRUE, "dayType_activity_data" )
 print(printObj, type = "html")
 ```
 
@@ -292,7 +291,7 @@ dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
 ```
 
 ```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
-printTable(dayType_Mean_Total_Steps_by_Interval, FALSE)
+printTable(dayType_Mean_Total_Steps_by_Interval, FALSE, "dayType_Mean_Total_Steps_by_Interval")
 print(printObj, type = "html")
 ```
 

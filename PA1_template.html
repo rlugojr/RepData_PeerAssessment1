@@ -156,8 +156,11 @@ total_steps_per_day &lt;- activity_data_no_NA %&gt;%
     group_by(date) %&gt;%
     summarise(totalSteps = sum(steps))</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:26 2017 -->
+<!-- Mon Feb 13 23:44:40 2017 -->
 <table border="1">
+<caption align="bottom">
+total_steps_per_day
+</caption>
 <tr>
 <th>
 </th>
@@ -312,8 +315,11 @@ print(paste(&quot;Median total steps per day:&quot;, midTotalSteps))</code></pre
     group_by(interval) %&gt;%
     summarise(meanSteps = mean(steps))</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:26 2017 -->
+<!-- Mon Feb 13 23:44:41 2017 -->
 <table border="1">
+<caption align="bottom">
+mean_steps_per_interval_all_days
+</caption>
 <tr>
 <th>
 </th>
@@ -471,8 +477,11 @@ plot_time_series_interval_max_steps</code></pre>
 print(paste(&quot;Number of Observations missing data:&quot;, count(missing_activity_data)))</code></pre>
 <pre><code>## [1] &quot;Number of Observations missing data: 2304&quot;</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:42 2017 -->
 <table border="1">
+<caption align="bottom">
+missing_activity_data
+</caption>
 <tr>
 <th>
 </th>
@@ -621,8 +630,11 @@ interval
 <pre class="r"><code>imputed_activity_data &lt;- inner_join(missing_activity_data, mean_steps_per_interval_all_days, by = &quot;interval&quot;) %&gt;%
     select(steps = meanSteps, date,interval)</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:42 2017 -->
 <table border="1">
+<caption align="bottom">
+imputed_activity_data
+</caption>
 <tr>
 <th>
 </th>
@@ -780,8 +792,11 @@ interval
 <p>Create new dataset that contains original with replaced NA observations.</p>
 <pre class="r"><code>revised_activity_data &lt;- rbind(activity_data_no_NA, imputed_activity_data)</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:42 2017 -->
 <table border="1">
+<caption align="bottom">
+revised_activity_data
+</caption>
 <tr>
 <th>
 </th>
@@ -942,8 +957,11 @@ interval
     group_by(date) %&gt;%
     summarise(totalSteps = sum(steps))</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:28 2017 -->
+<!-- Mon Feb 13 23:44:43 2017 -->
 <table border="1">
+<caption align="bottom">
+revised_total_steps_per_day
+</caption>
 <tr>
 <th>
 </th>
@@ -1110,8 +1128,11 @@ vdetermineDayType &lt;- Vectorize(determineDayType)</code></pre>
 ### make the column a factor with 2 levels.
 dayType_activity_data$dayType &lt;- as.factor(dayType_activity_data$dayType)</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:31 2017 -->
+<!-- Mon Feb 13 23:44:45 2017 -->
 <table border="1">
+<caption align="bottom">
+dayType_activity_data
+</caption>
 <tr>
 <th>
 </th>
@@ -1304,8 +1325,11 @@ dayType_Mean_Total_Steps_by_Interval &lt;- dayType_activity_data %&gt;%
     group_by(dayType, interval) %&gt;%
     summarise(meanSteps = mean(steps))</code></pre>
 <!-- html table generated in R 3.3.2 by xtable 1.8-2 package -->
-<!-- Mon Feb 13 23:34:31 2017 -->
+<!-- Mon Feb 13 23:44:45 2017 -->
 <table border="1">
+<caption align="bottom">
+dayType_Mean_Total_Steps_by_Interval
+</caption>
 <tr>
 <th>
 </th>
