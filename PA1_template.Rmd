@@ -66,6 +66,7 @@ print(printObj, type = "html")
 
 
 Now to plot the histogram of the **Total Steps per Day (totalSteps)** to visualize the distribution.  To determine the number of bins which may be optimal for analysis, I've used the square root of the range of the variable, applying the ceiling method of rounding in order to get a whole number that is larger than the variable's max value.
+
 The bin-size may have required a custom function or locating an existing package, however since we only had one Histogram I chose to divide the max value by the number of bins previously calculated and the result was rounded up to the next hundred, resulting in a bin width = 3,100.
 
 ```{r}
@@ -80,7 +81,9 @@ plot_histogram_total_steps_per_day <- ggplot(data = total_steps_per_day, aes(x =
 plot_histogram_total_steps_per_day
 ```
 
-Although we can visually identify that the bins with the largest number of values are in the center of the graph, those 2 bins can account for up to 6,200 values so it is highly unlikely that we can guess the exact value at the center of the distribution. We can, however, determine the central value by calculating the measures of central tendency.  The Mean and Median values are measures of central tendency and comparing the two would allow us to gauge the strength or weakness of the central tendency for this distribution. This being the latter case, the comparison of Mean and Median values would provide us with the size and direction of skew.  As the skew increases, so does variablity in the data set and the chance of finding a valid center, preventing it from being a symmetrical distribution.
+Although we can visually identify that the bins with the largest number of values are in the center of the graph, those 2 bins can account for up to 6,200 values so it is highly unlikely that we can guess the exact value at the center of the distribution. We can, however, determine the central value by calculating the measures of central tendency.
+
+The Mean and Median values are measures of central tendency and comparing the two would allow us to gauge the strength or weakness of the central tendency for this distribution. This being the latter case, the comparison of Mean and Median values would provide us with the size and direction of skew.  As the skew increases, so does variablity in the data set and the chance of finding a valid center, preventing it from being a symmetrical distribution.
 
 First, calculate the **Mean** value of **totalSteps**.
 
@@ -108,7 +111,11 @@ mean_steps_per_interval_all_days <- activity_data_no_NA %>%
     select(interval, steps) %>%
     group_by(interval) %>%
     summarise(meanSteps = mean(steps))
-kable(summary(mean_steps_per_interval_all_days), caption = "total_steps_per_day", digits = 2, type = "html")
+```
+
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printTable(mean_steps_per_interval_all_days, FALSE)
+print(printObj, type = "html")
 ```
 
 Create the timeseries plot using the interval as the x value and the meanSteps as the continuous y value.
@@ -139,10 +146,10 @@ plot vline at interval with max steps
 ```{r}
 plot_time_series_interval_max_steps = plot_time_series_mean_steps_per_interval +
     geom_vline(xintercept = interval_max_steps$interval, color = "red", lwd = 0.1, linetype = "longdash") +
-    geom_point(x = interval_max_steps$interval, y = interval_max_steps$meanSteps, pch = 21, size = 0.5, color = "red") +
+    geom_point(x = interval_max_steps$interval, y = interval_max_steps$meanSteps, pch = 21, size = 2, color = "red") +
     labs(title = "Average Total Steps per Interval ", x = "Interval", y = "Average Total Steps") +
-    geom_text(aes(x  = interval_max_steps$interval, y = 0), nudge_x = 200, size = 2, label = paste("Interval: ",interval_max_steps$interval), color = "red") +
-    geom_text(aes(x  = interval_max_steps$interval, y = interval_max_steps$meanSteps), nudge_x = 200, size = 2, label = paste("Max:", round(interval_max_steps$meanSteps,2)), color = "red") +
+    geom_text(aes(x  = interval_max_steps$interval, y = 0), nudge_x = 200, size = 4, label = paste("Interval: ",interval_max_steps$interval), color = "red") +
+    geom_text(aes(x  = interval_max_steps$interval, y = interval_max_steps$meanSteps), nudge_x = 200, size = 4, label = paste("Max:", round(interval_max_steps$meanSteps,2)), color = "red") +
     ggsave(filename = "figures/time_series_interval_max_steps.png", width = 5, height = 3)
 
 plot_time_series_interval_max_steps
@@ -156,11 +163,21 @@ missing_activity_data <- filter(activity_data,is.na(activity_data$steps))
 print(paste("Number of Observations missing data:", count(missing_activity_data)))
 ```
 
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printTable(missing_activity_data, TRUE)
+print(printObj, type = "html")
+```
+
 Devise strategy to replace NA values with average steps value for each corresponding interval.
 
 ```{r}
 imputed_activity_data <- inner_join(missing_activity_data, mean_steps_per_interval_all_days, by = "interval") %>%
     select(steps = meanSteps, date,interval)
+```
+
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printTable(imputed_activity_data, TRUE)
+print(printObj, type = "html")
 ```
 
 Create new dataset that contains original with replaced NA observations.
@@ -169,6 +186,12 @@ Create new dataset that contains original with replaced NA observations.
 revised_activity_data <- rbind(activity_data_no_NA, imputed_activity_data)
 ```
 
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printTable(filter(revised_activity_data, steps > 0), TRUE)
+print(printObj, type = "html")
+```
+
+
 Make a histogram of the total number of steps taken each day using new dataset.
 
 ```{r}
@@ -176,6 +199,11 @@ revised_total_steps_per_day <- revised_activity_data %>%
     select(date, steps) %>%
     group_by(date) %>%
     summarise(totalSteps = sum(steps))
+```
+
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printTable(revised_total_steps_per_day, TRUE)
+print(printObj, type = "html")
 ```
 
 Plot histogram of steps per day.
@@ -250,11 +278,22 @@ dayType_activity_data <- mutate(revised_activity_data, dayType = vdetermineDayTy
 dayType_activity_data$dayType <- as.factor(dayType_activity_data$dayType)
 ```
 
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printTable(dayType_activity_data, TRUE)
+print(printObj, type = "html")
+```
+
+
 ```{r}
 ### Calculate average steps by dayType and interval
 dayType_Mean_Total_Steps_by_Interval <- dayType_activity_data %>%
     group_by(dayType, interval) %>%
     summarise(meanSteps = mean(steps))
+```
+
+```{r results="asis", echo=FALSE, message=FALSE, warning=FALSE}
+printTable(dayType_Mean_Total_Steps_by_Interval, FALSE)
+print(printObj, type = "html")
 ```
 
 Plot using "lattice" to match example
@@ -265,3 +304,7 @@ time_series_mean_steps_interval_dayType <-  xyplot(meanSteps ~ interval|dayType,
 #note: lattice can only save to the current working directory (unless I missed something), so added steps to change to "figures" dir and then back.
 time_series_mean_steps_interval_dayType
 ```
+
+We can see from the comparison of the two visualizations that the subject's pattern has a slight shift to the right on weekends.  Based on the average observations, they are more active later in the morning and remain very active until later at night on a weekend than on weekdays.
+
+The weekday displays a higher level of activity at first, then a rapid and severe drop in activity that remains low to moderate for the duration of the day and night, leading to an earlier drop in activity in the last intervals, slowing activity much sooner than during the weekend. 
